@@ -10,7 +10,7 @@ bearer_token = os.environ.get("BEARER_TOKEN")
 def create_url():
     # Specify the usernames that you want to lookup below
     # You can enter up to 100 comma-separated values.
-    usernames = "usernames=TwitterDev,TwitterAPI,NUtwitaccess"
+    usernames = "usernames=NUtwitaccess"
     user_fields = "user.fields=description,created_at,location,public_metrics,entities"
     # User fields are adjustable, options include:
     # created_at, description, entities, id, location, name,
