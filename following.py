@@ -4,12 +4,14 @@ import json
 
 # To set your environment variables in your terminal run the following line:
 # export 'BEARER_TOKEN'='<your_bearer_token>'
-bearer_token = os.environ.get("BEARER_TOKEN")
+#bearer_token = os.environ.get("BEARER_TOKEN")
+
+bearer_token = "AAAAAAAAAAAAAAAAAAAAAN6ubQEAAAAAsskOd3YAHJYaqf666eJGJmraaM0%3DLGe7PDtgFvFfqdWubiMNnfs9H1Nr1KpJuyZ9khmbQgFLlEbW5l"
 
 
-def create_url():
+def create_url(id):
     # Replace with user ID below
-    user_id = 1513918860482785289
+    user_id = id
     return "https://api.twitter.com/2/users/{}/following".format(user_id)
 
 
@@ -39,12 +41,12 @@ def connect_to_endpoint(url, params):
     return response.json()
 
 
-def main():
-    url = create_url()
+def get_data(id):
+    url = create_url(id)
     params = get_params()
     json_response = connect_to_endpoint(url, params)
-    print(json.dumps(json_response, indent=4, sort_keys=True))
+    return json_response
 
 
 if __name__ == "__main__":
-    main()
+    get_data()

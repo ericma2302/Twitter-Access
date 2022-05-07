@@ -1,3 +1,4 @@
+from webbrowser import get
 import requests
 import os
 import json
@@ -8,9 +9,9 @@ import json
 bearer_token = "AAAAAAAAAAAAAAAAAAAAAN6ubQEAAAAAsskOd3YAHJYaqf666eJGJmraaM0%3DLGe7PDtgFvFfqdWubiMNnfs9H1Nr1KpJuyZ9khmbQgFLlEbW5l"
 
 
-def create_url():
+def create_url(id):
     # Replace with user ID below
-    user_id = 2557521
+    user_id = id
     return "https://api.twitter.com/2/users/{}/tweets".format(user_id)
 
 
@@ -47,40 +48,41 @@ def connect_to_endpoint(url, params):
     return response.json()
 
 
-def main():
-    retweets_separately()
+def get_data(id):
+    timeline = get_timeline(id)
+    tweets = tweets_separately(timeline)
+    retweets = retweets_separately(timeline)
+    return [timeline, tweets, retweets]
 
-def get_timeline():
-    url = create_url()
+def get_timeline(id):
+    url = create_url(id)
     params = get_params()
     json_response = connect_to_endpoint(url, params)
     #print(json.dumps(json_response, indent=4, sort_keys=True))
     return json_response
 
-def tweets_separately():
+def tweets_separately(timeline):
     #get the timeline json, filter each text for whether there is RT @ in the start, put all the ones that don't have it into separate list
-    json_response = get_timeline()
+    json_response = timeline
     timeline = json_response['data']
 
     #print(json_response['data'][0]['text'][0:5])
     tweets_iterator = filter(is_tweet, timeline)
     tweets = list(tweets_iterator)
 
-    print(tweets)
+    return tweets
    # print(json_response['data'][0])
 
-def retweets_separately():
+def retweets_separately(timeline):
     #get the timeline json, filter each text for whether there is RT @ in the start, put all the ones that don't have it into separate list
-    json_response = get_timeline()
+    json_response = timeline
     timeline = json_response['data']
 
     #print(json_response['data'][0]['text'][0:5])
     retweets_iterator = filter(is_retweet, timeline)
     retweets = list(retweets_iterator)
 
-    print(retweets)
-   # print(json_response['data'][0])
-
+    return retweets
 
 def is_tweet(tweet):
     first_five = tweet['text'][0:4]
@@ -99,4 +101,4 @@ def is_retweet(tweet):
 
 
 if __name__ == "__main__":
-    main()
+    get_data()
