@@ -11,7 +11,7 @@ from timeline import get_data as get_data_timeline
 
 
 def main():
-    username = "northwesterncs"
+    username = "espn"
     user_info = get_data_userinfo(username)
     #print(user_info)
     user_id = user_info['data'][0]['id']

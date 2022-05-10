@@ -23,7 +23,7 @@ def get_params():
     # in_reply_to_user_id, lang, non_public_metrics, organic_metrics,
     # possibly_sensitive, promoted_metrics, public_metrics, referenced_tweets,
     # source, text, and withheld
-    return {"tweet.fields": "created_at", "max_results": 100}
+    return {"tweet.fields": "created_at,public_metrics,geo,entities,context_annotations", "max_results": 100}
 
 
 def bearer_oauth(r):
@@ -58,7 +58,32 @@ def get_timeline(id):
     url = create_url(id)
     params = get_params()
     json_response = connect_to_endpoint(url, params)
-    #print(json.dumps(json_response, indent=4, sort_keys=True))
+    #clean labels
+    for data_json in json_response['data']:
+        labels = []
+        for annot in data_json["context_annotations"]:
+            indiv_label  = annot['domain']['name']
+            if indiv_label not in labels:
+                labels.append(indiv_label)
+        data_json.pop("context_annotations")
+        data_json["labels"] = labels
+    
+    #clean hashtags
+    for data_json in json_response['data']:
+        if "hashtags" in data_json['entities'].keys():
+            hashtags = []
+            tweet_tags  = data_json['entities']['hashtags']
+            for indiv_tag in tweet_tags:
+                if indiv_tag["tag"] not in hashtags:
+                    hashtags.append(indiv_tag["tag"])
+            data_json.pop("entities")
+
+            if len(hashtags):
+                data_json["hashtags"] = hashtags
+        else:
+            data_json.pop("entities")
+
+
     return json_response
 
 def tweets_separately(timeline):
