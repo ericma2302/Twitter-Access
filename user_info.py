@@ -48,6 +48,7 @@ def connect_to_endpoint(url):
 def get_data(username):
     url = create_url(username)
     json_response = connect_to_endpoint(url)
+
     return json_response
 
 

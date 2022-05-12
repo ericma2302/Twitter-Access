@@ -60,28 +60,30 @@ def get_timeline(id):
     json_response = connect_to_endpoint(url, params)
     #clean labels
     for data_json in json_response['data']:
-        labels = []
-        for annot in data_json["context_annotations"]:
-            indiv_label  = annot['domain']['name']
-            if indiv_label not in labels:
-                labels.append(indiv_label)
-        data_json.pop("context_annotations")
-        data_json["labels"] = labels
+        if "context_annotations" in data_json.keys():
+            labels = []
+            for annot in data_json["context_annotations"]:
+                indiv_label  = annot['domain']['name']
+                if indiv_label not in labels:
+                    labels.append(indiv_label)
+            data_json.pop("context_annotations")
+            data_json["labels"] = labels
     
     #clean hashtags
     for data_json in json_response['data']:
-        if "hashtags" in data_json['entities'].keys():
-            hashtags = []
-            tweet_tags  = data_json['entities']['hashtags']
-            for indiv_tag in tweet_tags:
-                if indiv_tag["tag"] not in hashtags:
-                    hashtags.append(indiv_tag["tag"])
-            data_json.pop("entities")
+        if "entities" in data_json.keys():
+            if "hashtags" in data_json['entities'].keys():
+                hashtags = []
+                tweet_tags  = data_json['entities']['hashtags']
+                for indiv_tag in tweet_tags:
+                    if indiv_tag["tag"] not in hashtags:
+                        hashtags.append(indiv_tag["tag"])
+                data_json.pop("entities")
 
-            if len(hashtags):
-                data_json["hashtags"] = hashtags
-        else:
-            data_json.pop("entities")
+                if len(hashtags):
+                    data_json["hashtags"] = hashtags
+            else:
+                data_json.pop("entities")
 
 
     return json_response
@@ -99,7 +101,6 @@ def tweets_separately(timeline):
    # print(json_response['data'][0])
 
 def retweets_separately(timeline):
-    #get the timeline json, filter each text for whether there is RT @ in the start, put all the ones that don't have it into separate list
     json_response = timeline
     timeline = json_response['data']
 
