@@ -16,7 +16,7 @@ def create_url(id):
 
 
 def get_params():
-    return {"user.fields": "created_at"}
+    return {"user.fields": "created_at,profile_image_url", "max_results": 1000}
 
 
 def bearer_oauth(r):
@@ -45,6 +45,7 @@ def get_data(id):
     url = create_url(id)
     params = get_params()
     json_response = connect_to_endpoint(url, params)
+    #print(json.dumps(json_response, indent=4, sort_keys=True))
     return json_response
 
 
